@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import './components.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-dark: #0A0C10;
+    --bg-card: rgba(22, 27, 34, 0.7);
+    --border-card: rgba(255, 255, 255, 0.08);
+    --accent-blue: #3b82f6;
+    --accent-blue-hover: #2563eb;
+    --accent-glow: rgba(59, 130, 246, 0.5);
+  }
+
+  html {
+    font-family: 'Outfit', sans-serif;
+    scroll-behavior: smooth;
+    background-color: var(--bg-dark);
+    color: #e5e7eb;
+  }
+
+  body {
+    background-image: 
+      radial-gradient(circle at 15% 50%, rgba(20, 30, 60, 0.6), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(30, 15, 45, 0.5), transparent 25%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+}
