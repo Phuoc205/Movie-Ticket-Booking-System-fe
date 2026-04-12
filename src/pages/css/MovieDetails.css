@@ -1,0 +1,54 @@
+/* Movie Details Hero */
+.movie-details-hero {
+  @apply relative rounded-3xl overflow-hidden shadow-2xl bg-[var(--bg-card)] border border-[var(--border-card)];
+}
+
+.movie-details-backdrop {
+  @apply absolute inset-0 bg-cover bg-center opacity-10 filter blur-xl;
+}
+
+.movie-genre-badge {
+  @apply px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide bg-[var(--accent-glow)] text-white border border-[var(--accent-blue)] shadow-[0_0_10px_var(--accent-glow)];
+}
+
+.movie-badge {
+  @apply bg-gray-800/80 backdrop-blur-md text-gray-300 px-4 py-1.5 rounded-full text-sm font-medium border border-gray-700/50;
+}
+
+/* Showtime Button */
+.showtime-btn {
+  @apply px-6 py-4 rounded-2xl border-2 transition-all duration-300 text-left flex flex-col gap-1.5 min-w-[150px] relative overflow-hidden;
+}
+
+.showtime-btn-active {
+  @apply bg-[var(--accent-blue)] border-transparent text-white scale-105 shadow-[0_10px_30px_var(--accent-glow)];
+}
+.showtime-btn-active::before {
+  content: '';
+  @apply absolute inset-0 bg-white opacity-10;
+}
+
+.showtime-btn-idle {
+  @apply bg-gray-900/60 border-gray-700 text-gray-400 hover:border-[var(--accent-blue)] hover:text-white backdrop-blur-sm hover:shadow-[0_0_15px_var(--accent-glow)];
+}
+
+/* Screen */
+.cinema-screen {
+  @apply w-full max-w-3xl mx-auto h-12 bg-white/5 rounded-t-3xl rounded-b-md mb-16 relative flex items-center justify-center border-t border-[var(--accent-blue)] shadow-[0_-15px_40px_var(--accent-glow)];
+  transform: perspective(600px) rotateX(-15deg);
+}
+.cinema-screen::before {
+  content: '';
+  @apply absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-t from-[var(--accent-glow)] to-transparent opacity-30;
+}
+
+/* Booking Bar */
+.booking-summary-bar {
+  @apply fixed bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl bg-gray-900/90 backdrop-blur-xl p-4 md:p-6 rounded-2xl border border-[var(--border-card)] shadow-[0_0_40px_rgba(0,0,0,0.8)] z-50 flex flex-col md:flex-row justify-between items-center gap-4;
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUp {
+  from { transform: translate(-50%, 100%); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
