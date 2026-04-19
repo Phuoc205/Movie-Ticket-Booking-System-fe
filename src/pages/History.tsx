@@ -29,7 +29,9 @@ const History: React.FC = () => {
       setIsLoading(true);
       try {
         const response = await api.get('/bookings/history', {
-          params: { userId: auth.user.id },
+          headers: {
+            Authorization: `Bearer ${auth.token}`,
+          },
         });
         setBookings(response.data);
       } catch (error) {
@@ -40,6 +42,32 @@ const History: React.FC = () => {
     };
     fetchHistory();
   }, [auth?.user?.id]);
+
+
+  const refund = async (id: string) => {
+    const confirm = window.confirm("Bạn chắc chắn muốn hoàn vé?");
+    if (!confirm) return;
+
+    try {
+      await api.post(`/bookings/${id}/refund`, {}, {
+        headers: {
+          Authorization: `Bearer ${auth?.token}`,
+        },
+      });
+
+      toast.success("Hoàn vé thành công");
+
+      // update UI
+      setBookings(prev =>
+        prev.map(b =>
+          b.id === id ? { ...b, status: "REFUNDED" } : b
+        )
+      );
+
+    } catch (e: any) {
+      toast.error(e.response?.data?.message || "Lỗi hoàn vé");
+    }
+  };
 
   return (
     <div className="page-container p-4 md:p-8">
@@ -70,6 +98,12 @@ const History: React.FC = () => {
                   })
                 : '';
               const isUsed = booking.status === 'USED';
+              const isRefunded = booking.status === 'REFUNDED';
+
+              const canRefund =
+                booking.status === 'CONFIRMED' &&
+                booking.showtime?.start_time &&
+                new Date(booking.showtime.start_time).getTime() - Date.now() > 60 * 60 * 1000;
 
               return (
                 <div
@@ -91,7 +125,13 @@ const History: React.FC = () => {
                             ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30'
                             : 'bg-green-500/10 text-green-400 border-green-500/30'
                         }`}>
-                          {isUsed ? 'Đã dùng' : booking.status === 'PENDING' ? 'Chờ TT' : 'Thành công'}
+                          {isRefunded
+                            ? 'Đã hoàn'
+                            : isUsed
+                            ? 'Đã dùng'
+                            : booking.status === 'PENDING'
+                            ? 'Chờ TT'
+                            : 'Thành công'}
                         </span>
                       </div>
 
@@ -108,6 +148,16 @@ const History: React.FC = () => {
                           <span className="text-gray-200 font-medium">{seatList}</span>
                         </div>
                       </div>
+
+                      {/* REFUND BUTTON */}
+                      {canRefund && (
+                        <button
+                          onClick={() => refund(booking.id)}
+                          className="mt-4 bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white"
+                        >
+                          Hoàn vé
+                        </button>
+                      )}
                     </div>
 
                     {/* Right - Price & ID */}

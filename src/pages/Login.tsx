@@ -34,6 +34,7 @@ const Login: React.FC = () => {
         authContext.login(user, response.data.token || response.data.access_token);
         toast.success(response.data.message || 'Đăng nhập thành công');
         
+        console.log("authContext:", authContext);
         // Redirect based on role
         if (user.role === 'ADMIN') {
           navigate('/admin');

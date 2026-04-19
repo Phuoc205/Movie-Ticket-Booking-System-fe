@@ -1,0 +1,35 @@
+.header {
+  @apply fixed top-0 left-0 w-full z-50 bg-gray-900/80 backdrop-blur-md border-b shadow-lg;
+}
+
+.header-container {
+  @apply max-w-7xl mx-auto px-4 h-[72px] flex items-center justify-between;
+}
+
+.logo {
+  @apply text-2xl font-black text-white tracking-tight flex items-center gap-2 drop-shadow-md;
+}
+
+.logo-icon {
+  @apply text-blue-500 text-3xl leading-none -rotate-12;
+}
+
+.nav {
+  @apply flex items-center gap-3 sm:gap-5 text-sm font-medium;
+}
+
+.nav-link {
+  @apply text-gray-300 hover:text-white transition-colors;
+}
+
+.nav-btn {
+  @apply bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg font-bold;
+}
+
+.avatar {
+  @apply w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold;
+}
+
+.logout-btn {
+  @apply text-red-400 hover:text-red-300 bg-red-900/20 px-3 py-1.5 rounded-md font-bold;
+}

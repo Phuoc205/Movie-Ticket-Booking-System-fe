@@ -1,65 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useMovies } from '../hooks/useMovies';
+import Hero from '../components/Hero';
+import Trailer from '../components/Trailer';
+import MovieGrid from '../components/MovieGrid';
 import './css/Home.css';
-import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import api from '../services/api';
 
-interface Movie {
-  id: string;
-  title: string;
-  description: string;
-  poster_url: string;
-  duration: number;
-  release_date: string;
-  genre: string;
-}
-
-const Home: React.FC = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+const Home = () => {
+  const { movies, comingSoon, loading, searching, searchMovies, fetchMovies } = useMovies();
   const [searchQuery, setSearchQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSearching, setIsSearching] = useState(false);
-
-  const fetchMovies = async () => {
-    setIsLoading(true);
-    try {
-      const response = await api.get('/movies');
-      setMovies(response.data);
-    } catch (error) {
-      toast.error('Không thể tải danh sách phim. Vui lòng thử lại sau.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [trailerMovie, setTrailerMovie] = useState<Movie | null>(null);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!searchQuery.trim()) {
       fetchMovies();
       return;
     }
 
-    setIsSearching(true);
+    await searchMovies(searchQuery);
+  };
+
+  const getEmbedUrl = (url: string) => {
     try {
-      const response = await api.get(`/movies/search?name=${encodeURIComponent(searchQuery)}`);
-      setMovies(response.data);
-    } catch (error) {
-      toast.error('Có lỗi xảy ra khi tìm kiếm');
-    } finally {
-      setIsSearching(false);
+      const u = new URL(url);
+      const videoId = u.searchParams.get("v") || url.split("/").pop();
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    } catch {
+      return "";
     }
   };
 
-  useEffect(() => {
-    fetchMovies();
-  }, []);
-
   return (
     <div className="page-container">
-      {/* Header/Hero Section */}
-      <div className="home-hero mx-4 lg:mx-auto max-w-7xl mt-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="z-10 relative">
+
+      <Trailer />
+
+      <Hero>
+        <div className="z-10 relative">
             <h1 className="page-title mb-3">
               Phim Đang Chiếu
             </h1>
@@ -76,56 +54,72 @@ const Home: React.FC = () => {
             />
             <button
               type="submit"
-              disabled={isSearching}
+              disabled={searching}
               className="btn-primary rounded-l-none !rounded-r-xl min-w-[120px]"
             >
-              {isSearching ? <div className="spinner-small"></div> : 'Tìm Kiếm'}
+              {searching ? <div className="spinner-small"></div> : 'Tìm Kiếm'}
             </button>
           </form>
-        </div>
-      </div>
+      </Hero>
 
-      {/* Movies Grid */}
       <div className="max-w-7xl mx-auto px-4 mt-8">
-        {isLoading ? (
-          <div className="flex justify-center items-center py-32">
-            <div className="spinner"></div>
+        {loading ? (
+          <div className="flex justify-center py-32">
+            <div className="spinner" />
           </div>
         ) : movies.length > 0 ? (
-          <div className="home-movies-grid">
-            {movies.map((movie) => (
-              <Link key={movie.id} to={`/movie/${movie.id}`} className="movie-card group">
-                
-                <div className="movie-poster-placeholder">
-                  {movie.poster_url ? (
-                    <img src={movie.poster_url} alt={movie.title} className="w-full h-full object-cover" />
-                  ) : (
-                    <span>Chưa có poster</span>
-                  )}
-                  <div className="movie-poster-overlay"></div>
-                  <div className="movie-duration-badge">{movie.duration} Phút</div>
-                </div>
-
-                <div className="movie-card-content">
-                  <h3 className="movie-card-title">{movie.title}</h3>
-                  <div className="movie-card-genre">{movie.genre}</div>
-                  <p className="movie-card-description">{movie.description}</p>
-                  
-                  <div className="movie-card-footer">
-                    <span>Khởi chiếu: {new Date(movie.release_date).toLocaleDateString('vi-VN')}</span>
-                  </div>
-                </div>
-
-              </Link>
-            ))}
-          </div>
+          <MovieGrid movies={movies} />
         ) : (
-          <div className="card-container text-center py-24 flex flex-col justify-center items-center">
-            <h3 className="text-3xl text-gray-200 font-bold mb-4">Không tìm thấy phim nào</h3>
-            <p className="text-gray-400 text-lg">Hãy thử từ khóa khác hoặc quay lại sau.</p>
+          <div className="text-center py-24 text-gray-400">
+            Không tìm thấy phim
           </div>
         )}
       </div>
+
+      {/*PHIM SẮP CHIẾU */}
+      <div className="max-w-7xl mx-auto px-4 mt-16 pb-20">
+        <h2 className="text-3xl font-bold mb-6 border-l-4 border-yellow-500 pl-4">
+          Sắp Chiếu
+        </h2>
+
+        {comingSoon.length > 0 ? (
+          <MovieGrid 
+            movies={comingSoon} 
+            isComingSoon 
+            onOpenTrailer={setTrailerMovie}
+          />
+        ) : (
+          <div className="text-gray-400 text-center py-10">
+            Chưa có phim sắp chiếu
+          </div>
+        )}
+      </div>
+
+      {trailerMovie && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+          <div className="relative w-[80%] aspect-video">
+            <iframe
+              className="w-full h-full rounded-xl"
+              src={getEmbedUrl(trailerMovie.trailer_url || "")}
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+            />
+
+            <button
+              onClick={() => setTrailerMovie(null)}
+              className="absolute -top-10 right-0 text-white text-2xl"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div
+            className="absolute inset-0 -z-10"
+            onClick={() => setTrailerMovie(null)}
+          />
+        </div>
+      )}
+
     </div>
   );
 };
