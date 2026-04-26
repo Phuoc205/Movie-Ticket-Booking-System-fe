@@ -5,13 +5,17 @@ import { AuthContext } from "../context/AuthContext";
 const ProtectedRoute = ({ children, allowedRoles }: any) => {
   const auth = useContext(AuthContext);
 
-  if (auth?.isLoading) return <div>Loading...</div>;
+  if (!auth || auth.isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  if (!auth?.isAuthenticated) {
+  if (!auth.user || !auth.token) {
     return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(auth.user?.role)) {
+  const role = auth.user.role?.trim();
+
+  if (allowedRoles && !allowedRoles.includes(role)) {
     return <Navigate to="/" replace />;
   }
 

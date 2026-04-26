@@ -4,18 +4,16 @@ import type { Movie } from '../types/movie';
 
 type Props = {
   movies: Movie[];
-  isComingSoon?: boolean;
   onOpenTrailer?: (movie: Movie) => void;
 };
 
-const MovieGrid: React.FC<Props> = ({ movies, isComingSoon = false, onOpenTrailer }) => {
+const MovieGrid: React.FC<Props> = ({ movies, onOpenTrailer }) => {
   return (
     <div className="home-movies-grid">
       {movies.map(movie => (
         <MovieCard
           key={movie.id}
           movie={movie}
-          isComingSoon={isComingSoon}
           onOpenTrailer={onOpenTrailer}
         />
       ))}

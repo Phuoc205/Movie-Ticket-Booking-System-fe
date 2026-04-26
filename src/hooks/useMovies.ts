@@ -5,15 +5,24 @@ import type { Movie } from '../types/movie';
 
 export const useMovies = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [nowShowing, setNowShowing] = useState<Movie[]>([]);
+  const [comingSoon, setComingSoon] = useState<Movie[]>([]);
+  const [classic, setClassic] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false);
-  const [comingSoon, setComingSoon] = useState<Movie[]>([]);
 
   const fetchMovies = async () => {
     setLoading(true);
     try {
-      const res = await api.get('/movies');
-      setMovies(res.data);
+      const res = await api.get<Movie[]>('/movies');
+
+      const all = res.data;
+
+      setMovies(all);
+      setNowShowing(all.filter(m => m.status === "NOW_SHOWING"));
+      setClassic(all.filter(m => m.status === "CLASSIC"));
+      setComingSoon(all.filter(m => m.status === "UPCOMING"));
+
     } catch {
       toast.error('Không thể tải danh sách phim');
     } finally {
@@ -21,21 +30,12 @@ export const useMovies = () => {
     }
   };
 
-  const fetchComingSoon = async () => {
-    try {
-      const res = await api.get("/movies", {
-        params: { status: "COMING_SOON" }
-      });
-      setComingSoon(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const searchMovies = async (keyword: string) => {
     setSearching(true);
     try {
-      const res = await api.get(`/movies/search?name=${encodeURIComponent(keyword)}`);
+      const res = await api.get(
+        `/movies/search?name=${encodeURIComponent(keyword)}`
+      );
       setMovies(res.data);
     } catch {
       toast.error('Lỗi tìm kiếm');
@@ -46,12 +46,13 @@ export const useMovies = () => {
 
   useEffect(() => {
     fetchMovies();
-    fetchComingSoon();
   }, []);
 
   return {
     movies,
+    nowShowing,
     comingSoon,
+    classic,
     loading,
     searching,
     fetchMovies,

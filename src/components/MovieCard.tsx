@@ -4,15 +4,23 @@ import type { Movie } from '../types/movie';
 
 const MovieCard: React.FC<{
   movie: Movie;
-  isComingSoon?: boolean;
   onOpenTrailer?: (movie: Movie) => void;
-}> = ({ movie, isComingSoon = false, onOpenTrailer }) => {
+}> = ({ movie, onOpenTrailer }) => {
 
   const navigate = useNavigate();
 
+  const isComingSoon = movie.status === 'UPCOMING';
+  const isClassic = movie.status === 'CLASSIC';
+  const isNowShowing = movie.status === 'NOW_SHOWING';
+  
   const handleClick = () => {
     if (isComingSoon) {
       onOpenTrailer?.(movie);
+      return;
+    }
+
+    if (isClassic) {
+      navigate(`/movie/${movie.id}`);
       return;
     }
 
@@ -56,10 +64,16 @@ const MovieCard: React.FC<{
 
         {/* 👇 text action */}
         <div className="mt-2 text-sm font-semibold">
-          {isComingSoon ? (
+          {isComingSoon && (
             <span className="text-yellow-400">Xem trailer</span>
-          ) : (
+          )}
+
+          {isNowShowing && (
             <span className="text-green-400">Đặt vé ngay</span>
+          )}
+
+          {isClassic && (
+            <span className="text-gray-400">Xem lại</span>
           )}
         </div>
       </div>

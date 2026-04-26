@@ -7,7 +7,15 @@ import './css/Home.css';
 import type { Movie } from '../types/movie';
 
 const Home = () => {
-  const { movies, comingSoon, loading, searching, searchMovies, fetchMovies } = useMovies();
+  const {
+    nowShowing,
+    comingSoon,
+    classic,
+    loading,
+    searching,
+    searchMovies,
+    fetchMovies
+  } = useMovies();
   const [searchQuery, setSearchQuery] = useState('');
   const [trailerMovie, setTrailerMovie] = useState<Movie | null>(null);
 
@@ -68,8 +76,8 @@ const Home = () => {
           <div className="flex justify-center py-32">
             <div className="spinner" />
           </div>
-        ) : movies.length > 0 ? (
-          <MovieGrid movies={movies} />
+        ) : nowShowing.length > 0 ? (
+          <MovieGrid movies={nowShowing} />
         ) : (
           <div className="text-center py-24 text-gray-400">
             Không tìm thấy phim
@@ -84,14 +92,31 @@ const Home = () => {
         </h2>
 
         {comingSoon.length > 0 ? (
-          <MovieGrid 
-            movies={comingSoon} 
-            isComingSoon 
+          <MovieGrid
+            movies={comingSoon}
             onOpenTrailer={setTrailerMovie}
           />
         ) : (
           <div className="text-gray-400 text-center py-10">
             Chưa có phim sắp chiếu
+          </div>
+        )}
+      </div>
+
+      {/*PHIM ĐÃ CHIẾU */}
+      <div className="max-w-7xl mx-auto px-4 mt-16 pb-20">
+        <h2 className="text-3xl font-bold mb-6 border-l-4 border-gray-500 pl-4">
+          Đã Chiếu
+        </h2>
+
+        {classic.length > 0 ? (
+          <MovieGrid
+            movies={classic}
+            onOpenTrailer={setTrailerMovie}
+          />
+        ) : (
+          <div className="text-gray-400 text-center py-10">
+            Chưa có phim đã chiếu
           </div>
         )}
       </div>
