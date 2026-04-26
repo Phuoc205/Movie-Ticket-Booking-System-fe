@@ -2,21 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import toast from 'react-hot-toast';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
+import type { BookingHistoryItem } from '../types/BookingHistoryItem';
 
-interface BookingHistoryItem {
-  id: string;
-  total_price: number;
-  status: string;
-  created_at: string;
-  showtime?: {
-    start_time: string;
-    movie: { title: string };
-    room: { name: string };
-  };
-  booking_seats?: {
-    seat: { seat_number: string };
-  }[];
-}
 
 const History: React.FC = () => {
   const auth = useContext(AuthContext);

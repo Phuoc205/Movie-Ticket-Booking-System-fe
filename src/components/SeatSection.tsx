@@ -1,10 +1,24 @@
+type Seat = {
+  id: number;
+  seat_number: string;
+  is_booked: boolean;
+};
+
+type Props = {
+  seats: Seat[];
+  selectedSeats: Seat[];
+  onToggle: (seat: Seat) => void;
+  isLoading: boolean;
+  seatsPerRow?: number;
+};
+
 export default function SeatSection({
   seats,
   selectedSeats,
   onToggle,
   isLoading,
-  seatsPerRow = 10, // fallback
-}: any) {
+  seatsPerRow = 10,
+}: Props) {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -13,7 +27,7 @@ export default function SeatSection({
     );
   }
 
-  const sortedSeats = [...seats].sort((a, b) => {
+  const sortedSeats = [...seats].sort((a: Seat, b: Seat) => {
     const rowA = a.seat_number[0];
     const rowB = b.seat_number[0];
 
@@ -29,20 +43,17 @@ export default function SeatSection({
 
   return (
     <div className="card-container mt-8 relative overflow-hidden">
-      
-      {/* TITLE */}
+
       <h3 className="text-2xl font-bold mb-10 text-center drop-shadow-md">
         Sơ đồ ghế
       </h3>
 
-      {/* SCREEN */}
       <div className="cinema-screen">
         <span className="text-[var(--accent-blue)] text-sm font-bold uppercase tracking-[0.5em]">
           Màn Hình
         </span>
       </div>
 
-      {/* GRID */}
       <div className="flex justify-center flex-col items-center gap-6 mt-10">
         <div
           className="grid gap-3 md:gap-4 p-4 md:p-8 bg-black/20 rounded-3xl border border-white/5 backdrop-blur-sm"
@@ -50,10 +61,9 @@ export default function SeatSection({
             gridTemplateColumns: `repeat(${seatsPerRow}, minmax(0, 1fr))`,
           }}
         >
-          
-          {sortedSeats.map((seat: any) => {
+          {sortedSeats.map((seat: Seat) => {
             const isSelected = selectedSeats.some(
-              (s) => s.id === seat.id
+              (s: Seat) => s.id === seat.id
             );
 
             let seatClass = "seat ";
@@ -78,7 +88,6 @@ export default function SeatSection({
         </div>
       </div>
 
-      {/* LEGEND */}
       <div className="flex justify-center flex-wrap gap-8 mt-8 text-sm font-medium">
         <div className="flex items-center gap-2">
           <div className="seat seat-available w-6 h-6 text-[0px]"></div>
@@ -96,7 +105,6 @@ export default function SeatSection({
         </div>
       </div>
 
-      {/* SELECTED SEATS */}
       {selectedSeats.length > 0 && (
         <div className="mt-8 text-center">
           <p className="text-gray-400 text-sm mb-2">
@@ -104,7 +112,7 @@ export default function SeatSection({
           </p>
 
           <div className="flex justify-center flex-wrap gap-2">
-            {selectedSeats.map((s: any) => (
+            {selectedSeats.map((s: Seat) => (
               <span
                 key={s.id}
                 className="bg-[var(--accent-glow)] text-white px-3 py-1 rounded-md text-sm font-bold"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ManageMovies from '../components/dashboard/ManageMovies';
 import ManageShowtimes from '../components/dashboard/ManageShowtimes';
 import ManageVouchers from '../components/dashboard/ManageVouchers';

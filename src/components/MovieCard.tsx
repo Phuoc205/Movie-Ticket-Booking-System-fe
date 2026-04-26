@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { Movie } from '../hooks/useMovies';
+import type { Movie } from '../types/movie';
 
 const MovieCard: React.FC<{
   movie: Movie;

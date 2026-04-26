@@ -24,7 +24,7 @@ const Login: React.FC = () => {
     try {
       const response = await api.post('/auth/login', { email, password });
       
-      const { user, token } = response.data;
+      const { user, token: _token  } = response.data;
       // Assuming response structure is { message: "...", user: {id, email, ...}, token: "..." }
       // The user object needs to have role
       

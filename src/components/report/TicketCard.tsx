@@ -1,5 +1,3 @@
-import React from 'react';
-
 const TicketCard = ({ total }: { total: number }) => {
   return (
     <div className="p-6 rounded-xl bg-black/40 border border-gray-800">

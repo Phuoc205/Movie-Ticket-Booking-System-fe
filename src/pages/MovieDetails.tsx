@@ -4,6 +4,7 @@ import { useMovieDetail } from "../hooks/useMovieDetail";
 import "./css/MovieDetails.css";
 import api from "../services/api";
 import SeatSection from "../components/SeatSection";
+import type { Showtime } from '../types/Showtime';
 
 const MovieDetails: React.FC = () => {
   const { id } = useParams();
@@ -217,7 +218,7 @@ const MovieDetails: React.FC = () => {
             </div>
           ) : (
             <div className="flex flex-wrap gap-4 mb-12">
-              {movie.showtimes.map((st) => {
+              {movie.showtimes.map((st: Showtime) => {
                 const startDate = new Date(st.start_time);
                 const isSelected = selectedShowtime?.id === st.id;
 

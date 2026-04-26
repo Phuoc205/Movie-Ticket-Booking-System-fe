@@ -4,6 +4,7 @@ import Hero from '../components/Hero';
 import Trailer from '../components/Trailer';
 import MovieGrid from '../components/MovieGrid';
 import './css/Home.css';
+import type { Movie } from '../types/movie';
 
 const Home = () => {
   const { movies, comingSoon, loading, searching, searchMovies, fetchMovies } = useMovies();

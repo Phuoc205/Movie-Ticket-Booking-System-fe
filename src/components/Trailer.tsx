@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Trailer = () => {
     const getEmbedUrl = (url: string) => {
         const videoId = new URL(url).searchParams.get('v');

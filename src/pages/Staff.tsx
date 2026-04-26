@@ -43,7 +43,7 @@ const Staff: React.FC = () => {
   const fetchAllBookings = async () => {
     setIsLoadingAll(true);
     try {
-      const response = await api.get('/bookings/history');
+      const response = await api.get('/bookings/all-history');
       setAllBookings(response.data);
     } catch (error) {
       toast.error('Không thể tải danh sách vé');

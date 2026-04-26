@@ -1,6 +1,6 @@
 import React from 'react';
 import MovieCard from './MovieCard';
-import type { Movie } from '../hooks/useMovies';
+import type { Movie } from '../types/movie';
 
 type Props = {
   movies: Movie[];

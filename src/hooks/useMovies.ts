@@ -1,17 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-
-export interface Movie {
-  id: string;
-  title: string;
-  description: string;
-  poster_url: string;
-  duration: number;
-  release_date: string;
-  trailer_url?: string;
-  genre: string;
-}
+import type { Movie } from '../types/movie';
 
 export const useMovies = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
