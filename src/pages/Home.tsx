@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useMovies } from '../hooks/useMovies';
-import Hero from '../components/Hero';
 import Trailer from '../components/Trailer';
 import MovieGrid from '../components/MovieGrid';
+import SubHeader from '../components/Subheader';
+
 import './css/Home.css';
 import type { Movie } from '../types/movie';
 
@@ -12,22 +13,29 @@ const Home = () => {
     comingSoon,
     classic,
     loading,
-    searching,
     searchMovies,
     fetchMovies
   } = useMovies();
   const [searchQuery, setSearchQuery] = useState('');
   const [trailerMovie, setTrailerMovie] = useState<Movie | null>(null);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const scrollToNowShowing = () => {
+    document.getElementById("nowShowing")?.scrollIntoView({
+      behavior: "smooth"
+    });
+  };
 
-    if (!searchQuery.trim()) {
+  const handleSearch = async (query: string) => {
+    if (!query.trim()) {
       fetchMovies();
       return;
     }
 
-    await searchMovies(searchQuery);
+    await searchMovies(query);
+
+    setTimeout(() => {
+      scrollToNowShowing();
+    }, 100);
   };
 
   const getEmbedUrl = (url: string) => {
@@ -42,42 +50,30 @@ const Home = () => {
 
   return (
     <div className="page-container">
-
+      <SubHeader
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        onSearch={(e: any) => {
+          e.preventDefault();
+          handleSearch(searchQuery);
+        }}
+      />
       <Trailer />
 
-      <Hero>
-        <div className="z-10 relative">
-            <h1 className="page-title mb-3">
-              Phim Đang Chiếu
-            </h1>
-            <p className="text-gray-400 text-lg font-light tracking-wide">Đặt vé ngay để thưởng thức những bộ phim bom tấn</p>
-          </div>
+      {/*PHIM ĐANG CHIẾU */}
+      <div className="max-w-7xl mx-auto px-4 mt-8" id='nowShowing'>
+        <h2 className="text-3xl font-bold mb-6 border-l-4 border-green-500 pl-4">
+          Phim Đang Chiếu
+        </h2>
 
-          <form onSubmit={handleSearch} className="home-search">
-            <input
-              type="text"
-              placeholder="Tìm kiếm tên phim..."
-              className="input-field rounded-r-none w-full !bg-gray-900/80 !backdrop-blur-md"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button
-              type="submit"
-              disabled={searching}
-              className="btn-primary rounded-l-none !rounded-r-xl min-w-[120px]"
-            >
-              {searching ? <div className="spinner-small"></div> : 'Tìm Kiếm'}
-            </button>
-          </form>
-      </Hero>
-
-      <div className="max-w-7xl mx-auto px-4 mt-8">
         {loading ? (
           <div className="flex justify-center py-32">
             <div className="spinner" />
           </div>
         ) : nowShowing.length > 0 ? (
-          <MovieGrid movies={nowShowing} />
+          <MovieGrid
+            movies={nowShowing}
+          />
         ) : (
           <div className="text-center py-24 text-gray-400">
             Không tìm thấy phim
@@ -86,9 +82,9 @@ const Home = () => {
       </div>
 
       {/*PHIM SẮP CHIẾU */}
-      <div className="max-w-7xl mx-auto px-4 mt-16 pb-20">
+      <div className="max-w-7xl mx-auto px-4 mt-16 pb-20" id='comingSoon'>
         <h2 className="text-3xl font-bold mb-6 border-l-4 border-yellow-500 pl-4">
-          Sắp Chiếu
+          Phim Sắp Chiếu
         </h2>
 
         {comingSoon.length > 0 ? (
@@ -104,9 +100,9 @@ const Home = () => {
       </div>
 
       {/*PHIM ĐÃ CHIẾU */}
-      <div className="max-w-7xl mx-auto px-4 mt-16 pb-20">
+      <div className="max-w-7xl mx-auto px-4 mt-16 pb-20" id='classic'>
         <h2 className="text-3xl font-bold mb-6 border-l-4 border-gray-500 pl-4">
-          Đã Chiếu
+          Phim Đã Chiếu
         </h2>
 
         {classic.length > 0 ? (

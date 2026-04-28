@@ -33,10 +33,19 @@ export const useMovies = () => {
   const searchMovies = async (keyword: string) => {
     setSearching(true);
     try {
-      const res = await api.get(
+      const res = await api.get<Movie[]>(
         `/movies/search?name=${encodeURIComponent(keyword)}`
       );
-      setMovies(res.data);
+
+      const result = res.data;
+
+      setMovies(result);
+
+      // 🔥 cập nhật lại luôn
+      setNowShowing(result.filter(m => m.status === "NOW_SHOWING"));
+      setClassic(result.filter(m => m.status === "CLASSIC"));
+      setComingSoon(result.filter(m => m.status === "UPCOMING"));
+
     } catch {
       toast.error('Lỗi tìm kiếm');
     } finally {
