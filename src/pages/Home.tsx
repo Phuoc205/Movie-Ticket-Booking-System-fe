@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useMovies } from '../hooks/useMovies';
 import Trailer from '../components/Trailer';
 import MovieGrid from '../components/MovieGrid';
-import SubHeader from '../components/Subheader';
+import SubHeader from '../components/SubHeader';
 
 import './css/Home.css';
 import type { Movie } from '../types/movie';
